@@ -96,10 +96,7 @@ function! s:open_register_buffer(regname) "{{{
     \       g:regbuf_open_command
     call s:create_buffer('regbuf:edit:@' . a:regname, open_command, 'acwrite')
 
-    let [value, b:regbuf_edit_regtype] = [getreg(a:regname, 1), getregtype(a:regname)]
-    let b:regbuf_edit_regname = a:regname
-    let b:regbuf_edit_regtype = getregtype(a:regname)
-    call setline(1, split(value, '\n'))
+    call s:write_register_value(a:regname)
 
     command!
     \   -bar -buffer -nargs=*
@@ -122,6 +119,13 @@ function! s:open_register_buffer(regname) "{{{
 
     setfiletype regbuf-edit
 endfunction "}}}
+function! s:write_register_value(regname) "{{{
+    let [value, b:regbuf_edit_regtype] = [getreg(a:regname, 1), getregtype(a:regname)]
+    let b:regbuf_edit_regname = a:regname
+    let b:regbuf_edit_regtype = getregtype(a:regname)
+    call setline(1, split(value, '\n'))
+endfunction "}}}
+
 function! s:buf_edit_apply() "{{{
     if !exists('b:regbuf_edit_regname')
         echoerr "b:regbuf_edit_regname is deleted by someone. Can't continue applying..."
