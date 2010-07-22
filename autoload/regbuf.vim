@@ -157,6 +157,9 @@ endfunction "}}}
 
 
 function! s:get_regname_on_cursor() "{{{
+    if expand('%') !=# 'regbuf:registers'
+        return s:INVALID_REGISTER
+    endif
     let line = getline('.')
     if line[0] !=# '"'
         return s:INVALID_REGISTER
