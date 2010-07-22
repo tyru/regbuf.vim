@@ -114,7 +114,7 @@ function! s:open_register_buffer(regname) "{{{
         augroup regbuf-edit
             autocmd!
             autocmd BufWritecmd <buffer> RegbufEditApply
-            autocmd BufLeave    <buffer> let s:edit_bufnr = -1
+            autocmd BufWinLeave <buffer> let s:edit_bufnr = -1
         augroup END
     endif
 
