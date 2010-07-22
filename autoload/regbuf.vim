@@ -23,18 +23,7 @@ lockvar s:INVALID_REGISTER
 function! regbuf#open(...) "{{{
     call s:create_buffer('regbuf:registers', g:regbuf_open_command, 'nofile')
 
-    let save_lang = v:lang
-    lang messages C
-    try
-        redir => output
-            silent registers
-        redir END
-    finally
-        execute 'lang messages' save_lang
-    endtry
-    let lines = split(output, '\n')
-    call remove(lines, 0)    " First line must be "--- Registers ---"
-    call setline(1, lines)
+    call s:write_registers()
 
     augroup regbuf
         autocmd!
@@ -57,6 +46,20 @@ function! regbuf#open(...) "{{{
 
     setlocal nomodifiable
     setfiletype regbuf
+endfunction "}}}
+function! s:write_registers() "{{{
+    let save_lang = v:lang
+    lang messages C
+    try
+        redir => output
+            silent registers
+        redir END
+    finally
+        execute 'lang messages' save_lang
+    endtry
+    let lines = split(output, '\n')
+    call remove(lines, 0)    " First line must be "--- Registers ---"
+    call setline(1, lines)
 endfunction "}}}
 
 function! s:buf_yank() "{{{
