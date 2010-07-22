@@ -170,7 +170,7 @@ function! s:create_buffer(name, open_command, buftype) "{{{
     let winnr = bufwinnr(bufnr(a:name))
     if winnr ==# -1    " not displayed
         execute a:open_command a:name
-        setlocal bufhidden=hide noswapfile nobuflisted
+        setlocal bufhidden=unload noswapfile nobuflisted
         let &l:buftype = a:buftype
     else
         execute winnr 'wincmd w'
