@@ -18,30 +18,36 @@ set cpo&vim
 let s:INVALID_REGISTER = -1
 lockvar s:INVALID_REGISTER
 
+let s:opened_bufnr = -1
 let s:edit_bufnr = -1
 
 
 
 function! regbuf#open() "{{{
-    call s:create_buffer('regbuf:registers', g:regbuf_open_command, 'nofile')
-
-    call s:write_registers()
-
     augroup regbuf
         autocmd!
-        if g:regbuf_show_preview
-            autocmd CursorMoved <buffer> call s:preview_register()
-        endif
-        autocmd BufWinLeave <buffer> call s:close_all_child_windows()
     augroup END
+
+    let s:opened_bufnr = bufnr('%')
+    autocmd regbuf BufWinLeave <buffer> let s:opened_bufnr = -1
+
+    call s:create_buffer('regbuf:registers', g:regbuf_open_command, 'nofile')
+    call s:write_registers()
+
+    if g:regbuf_show_preview
+        autocmd regbuf CursorMoved <buffer> call s:preview_register()
+    endif
+    autocmd regbuf BufWinLeave <buffer> call s:close_all_child_windows()
 
     nnoremap <silent><buffer> <Plug>(regbuf-yank)  :<C-u>call <SID>buf_yank()<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-paste) :<C-u>call <SID>buf_paste()<CR>
+    nnoremap <silent><buffer> <Plug>(regbuf-paste-buffer)   :<C-u>call <SID>buf_paste_buffer()<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-edit)  :<C-u>call <SID>buf_edit()<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-close)  :<C-u>close<CR>
     if !g:regbuf_no_default_keymappings
         nmap <buffer> <LocalLeader>y <Plug>(regbuf-yank)
         nmap <buffer> <LocalLeader>p <Plug>(regbuf-paste)
+        nmap <buffer> <LocalLeader>bp <Plug>(regbuf-paste-buffer)
         nmap <buffer> <LocalLeader>e <Plug>(regbuf-edit)
 
         nmap <buffer> <CR>      <Plug>(regbuf-edit)
@@ -96,6 +102,28 @@ function! s:buf_paste() "{{{
     endif
     let [value, type] = [getreg('"', 1), getregtype('"')]
     call setreg(regname, value, type)
+endfunction "}}}
+
+function! s:buf_paste_buffer() "{{{
+    let regname = s:get_regname_on_cursor()
+    if regname ==# s:INVALID_REGISTER
+        return
+    endif
+
+    let winnr = bufwinnr(s:opened_bufnr)
+    if winnr ==# -1
+        echohl WarningMsg
+        echomsg 'original buffer is closed...'
+        echohl None
+    endif
+
+    let prevwinnr = winnr()
+    execute winnr 'wincmd w'
+    let pastecmd = getregtype(regname) == 'v' ? 'P' : 'p'
+    execute 'normal!' '"' . regname . pastecmd
+    execute prevwinnr 'wincmd w'
+
+    quit    " will call s:close_all_child_windows().
 endfunction "}}}
 
 function! s:buf_edit() "{{{
