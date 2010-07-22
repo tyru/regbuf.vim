@@ -21,6 +21,9 @@ endif
 if !exists('g:regbuf_no_default_keymappings')
     let g:regbuf_no_default_keymappings = 0
 endif
+if !exists('g:regbuf_no_default_autocmd')
+    let g:regbuf_no_default_autocmd = 0
+endif
 if !exists('g:regbuf_no_default_edit_autocmd')
     let g:regbuf_no_default_edit_autocmd = 0
 endif

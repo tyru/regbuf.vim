@@ -25,10 +25,12 @@ function! regbuf#open(...) "{{{
 
     call s:write_registers()
 
-    augroup regbuf
-        autocmd!
-        autocmd CursorMoved <buffer> call s:preview_register()
-    augroup END
+    if !g:regbuf_no_default_autocmd
+        augroup regbuf
+            autocmd!
+            autocmd CursorMoved <buffer> call s:preview_register()
+        augroup END
+    endif
 
     nnoremap <silent><buffer> <Plug>(regbuf-yank)  :<C-u>call <SID>buf_yank()<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-paste) :<C-u>call <SID>buf_paste()<CR>
