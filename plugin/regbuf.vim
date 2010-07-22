@@ -12,6 +12,10 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 
+
+" NOTE: Remember g:regbuf_edit_open_command variable.
+" (:help g:regbuf_edit_open_command)
+
 if !exists('g:regbuf_open_command')
     let g:regbuf_open_command = 'new'
 endif
