@@ -24,6 +24,9 @@ endif
 if !exists('g:regbuf_no_default_edit_autocmd')
     let g:regbuf_no_default_edit_autocmd = 0
 endif
+if !exists('g:regbuf_show_preview')
+    let g:regbuf_show_preview = 1
+endif
 
 
 command!

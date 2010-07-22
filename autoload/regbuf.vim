@@ -30,7 +30,9 @@ function! regbuf#open() "{{{
     if !g:regbuf_no_default_autocmd
         augroup regbuf
             autocmd!
-            autocmd CursorMoved <buffer> call s:preview_register()
+            if g:regbuf_show_preview
+                autocmd CursorMoved <buffer> call s:preview_register()
+            endif
             autocmd BufWinLeave <buffer> call s:close_all_child_windows()
         augroup END
     endif
@@ -75,7 +77,7 @@ function! s:close_all_child_windows() "{{{
         close
     endif
 
-    pclose
+    call s:close_preview_window()
 
     execute winnr 'wincmd w'
 endfunction "}}}
@@ -106,7 +108,7 @@ function! s:buf_edit() "{{{
     call s:open_register_buffer(regname)
 endfunction "}}}
 function! s:open_register_buffer(regname) "{{{
-    pclose
+    call s:close_preview_window()
 
     let open_command =
     \   exists('g:regbuf_edit_open_command') ?
@@ -219,6 +221,14 @@ function! s:preview_register() "{{{
             break
         endif
     endfor
+endfunction "}}}
+
+
+function! s:close_preview_window() "{{{
+    if !g:regbuf_show_preview
+        return
+    endif
+    pclose
 endfunction "}}}
 
 
