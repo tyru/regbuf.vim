@@ -31,6 +31,7 @@ function! regbuf#open(...) "{{{
         augroup regbuf
             autocmd!
             autocmd CursorMoved <buffer> call s:preview_register()
+            autocmd BufWinLeave <buffer> call s:close_all_child_windows()
         augroup END
     endif
 
@@ -64,6 +65,18 @@ function! s:write_registers() "{{{
     let lines = split(output, '\n')
     call remove(lines, 0)    " First line must be "--- Registers ---"
     call setline(1, lines)
+endfunction "}}}
+function! s:close_all_child_windows() "{{{
+    let winnr = winnr()
+
+    if bufwinnr(s:edit_bufnr) !=# -1
+        execute bufwinnr(s:edit_bufnr) 'wincmd w'
+        close
+    endif
+
+    pclose
+
+    execute winnr 'wincmd w'
 endfunction "}}}
 
 function! s:buf_yank() "{{{
