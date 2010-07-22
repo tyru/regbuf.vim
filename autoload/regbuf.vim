@@ -21,6 +21,12 @@ lockvar s:INVALID_REGISTER
 let s:opened_bufnr = -1
 let s:edit_bufnr = -1
 
+function s:SID()
+    return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
+endfun
+let s:SID_PREFIX = s:SID()
+delfunc s:SID
+
 
 
 function! regbuf#open() "{{{
@@ -39,11 +45,11 @@ function! regbuf#open() "{{{
     endif
     autocmd regbuf BufWinLeave <buffer> call s:close_all_child_windows()
 
-    nnoremap <silent><buffer> <Plug>(regbuf-yank)  :<C-u>call <SID>buf_yank()<CR>
-    nnoremap <silent><buffer> <Plug>(regbuf-paste) :<C-u>call <SID>buf_paste()<CR>
-    nnoremap <silent><buffer> <Plug>(regbuf-swap)  :<C-u>call <SID>buf_swap()<CR>
-    nnoremap <silent><buffer> <Plug>(regbuf-paste-buffer)   :<C-u>call <SID>buf_paste_buffer()<CR>
-    nnoremap <silent><buffer> <Plug>(regbuf-edit)  :<C-u>call <SID>buf_edit()<CR>
+    nnoremap <silent><buffer> <Plug>(regbuf-yank)  :<C-u>call <SID>do_operate('buf_yank')<CR>
+    nnoremap <silent><buffer> <Plug>(regbuf-paste) :<C-u>call <SID>do_operate('buf_paste')<CR>
+    nnoremap <silent><buffer> <Plug>(regbuf-swap)  :<C-u>call <SID>do_operate('buf_swap')<CR>
+    nnoremap <silent><buffer> <Plug>(regbuf-paste-buffer)   :<C-u>call <SID>do_operate('buf_paste_buffer')<CR>
+    nnoremap <silent><buffer> <Plug>(regbuf-edit)  :<C-u>call <SID>do_operate('buf_edit')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-close)  :<C-u>close<CR>
     if !g:regbuf_no_default_keymappings
         nmap <buffer> <LocalLeader>y <Plug>(regbuf-yank)
@@ -88,39 +94,45 @@ function! s:close_all_child_windows() "{{{
     execute winnr 'wincmd w'
 endfunction "}}}
 
-function! s:buf_yank() "{{{
+function! s:do_operate(opfunc) "{{{
+    let s:op_register = v:register
+    let &opfunc = "\<SNR>" . s:SID_PREFIX . '_' . a:opfunc
+    normal! g@g@
+endfunction "}}}
+
+function! s:buf_yank(...) "{{{
     let regname = s:get_regname_on_cursor()
     if regname ==# s:INVALID_REGISTER
         return
     endif
     let [value, type] = [getreg(regname, 1), getregtype(regname)]
-    let given_regname = v:register != '' ? v:register : '"'
+    let given_regname = s:op_register != '' ? s:op_register : '"'
     call setreg(to_regname, value, type)
 endfunction "}}}
 
-function! s:buf_paste() "{{{
+function! s:buf_paste(...) "{{{
     let regname = s:get_regname_on_cursor()
     if regname ==# s:INVALID_REGISTER
         return
     endif
-    let given_regname = v:register != '' ? v:register : '"'
+    let given_regname = s:op_register != '' ? s:op_register : '"'
     let [value, type] = [getreg(given_regname, 1), getregtype(given_regname)]
     call setreg(regname, value, type)
 endfunction "}}}
 
-function! s:buf_swap() "{{{
+function! s:buf_swap(...) "{{{
     let regname = s:get_regname_on_cursor()
     if regname ==# s:INVALID_REGISTER
         return
     endif
     let [value, type] = [getreg(regname, 1), getregtype(regname)]
-    let given_regname = v:register != '' ? v:register : '"'
+    let given_regname = s:op_register != '' ? s:op_register : '"'
     let [given_value, given_type] = [getreg(given_regname, 1), getregtype(given_regname)]
     call setreg(regname, given_value, given_type)    " Yank to the register on cursor.
     call setreg('"', value, type)    " Yank to given register by keymapping.
 endfunction "}}}
 
-function! s:buf_paste_buffer() "{{{
+function! s:buf_paste_buffer(...) "{{{
     let regname = s:get_regname_on_cursor()
     if regname ==# s:INVALID_REGISTER
         return
@@ -142,7 +154,7 @@ function! s:buf_paste_buffer() "{{{
     quit    " will call s:close_all_child_windows().
 endfunction "}}}
 
-function! s:buf_edit() "{{{
+function! s:buf_edit(...) "{{{
     let regname = s:get_regname_on_cursor()
     if regname ==# s:INVALID_REGISTER
         return
