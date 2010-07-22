@@ -120,6 +120,7 @@ function! s:open_register_buffer(regname) "{{{
     setfiletype regbuf-edit
 endfunction "}}}
 function! s:write_register_value(regname) "{{{
+    %delete _
     let [value, b:regbuf_edit_regtype] = [getreg(a:regname, 1), getregtype(a:regname)]
     let b:regbuf_edit_regname = a:regname
     let b:regbuf_edit_regtype = getregtype(a:regname)
