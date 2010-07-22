@@ -184,7 +184,7 @@ function! s:preview_register() "{{{
         return
     endif
 
-    if bufwinnr(bufnr('regbuf:preview')) == -1
+    if bufwinnr(bufnr('regbuf:preview')) ==# -1
         call s:create_buffer('regbuf:preview', 'pedit', 'nofile')
     endif
 
