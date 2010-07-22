@@ -18,6 +18,9 @@ set cpo&vim
 let s:INVALID_REGISTER = -1
 lockvar s:INVALID_REGISTER
 
+let s:preview_bufnr = -1
+let s:edit_bufnr = -1
+
 
 
 function! regbuf#open(...) "{{{
@@ -94,7 +97,7 @@ function! s:open_register_buffer(regname) "{{{
     \   exists('g:regbuf_edit_open_command') ?
     \       g:regbuf_edit_open_command :
     \       g:regbuf_open_command
-    call s:create_buffer('regbuf:edit:@' . a:regname, open_command, 'acwrite')
+    let s:edit_bufnr = s:create_buffer('regbuf:edit:@' . a:regname, open_command, 'acwrite')
 
     call s:write_register_value(a:regname)
 
@@ -111,6 +114,7 @@ function! s:open_register_buffer(regname) "{{{
         augroup regbuf-edit
             autocmd!
             autocmd BufWritecmd <buffer> RegbufEditApply
+            autocmd BufLeave    <buffer> let s:edit_bufnr = -1
         augroup END
     endif
 
