@@ -121,9 +121,8 @@ function! s:open_register_buffer(regname) "{{{
 endfunction "}}}
 function! s:write_register_value(regname) "{{{
     %delete _
-    let [value, b:regbuf_edit_regtype] = [getreg(a:regname, 1), getregtype(a:regname)]
+    let [value, _] = [getreg(a:regname, 1), getregtype(a:regname)]
     let b:regbuf_edit_regname = a:regname
-    let b:regbuf_edit_regtype = getregtype(a:regname)
     call setline(1, split(value, '\n'))
 endfunction "}}}
 
@@ -133,15 +132,19 @@ function! s:buf_edit_apply() "{{{
         return
     endif
 
-    let INVALID_REGTYPE = -1
-    let [value, type] = [
-    \   join(getline(1, '$'), "\n"),
-    \   exists('b:regbuf_edit_regtype') ? b:regbuf_edit_regtype : INVALID_REGTYPE
-    \]
-
-    call call('setreg', [b:regbuf_edit_regname, value] + (type !=# INVALID_REGTYPE ? [type] : []))
+    let lines = getline(1, '$')
+    let [value, type] = [join(lines, "\n"), s:detect_regtype(lines)]
+    call setreg(b:regbuf_edit_regname, value, type)
 
     setlocal nomodified
+endfunction "}}}
+function! s:detect_regtype(lines) "{{{
+    " TODO
+    if len(a:lines) > 1
+        return 'V'
+    else
+        return 'v'
+    endif
 endfunction "}}}
 
 
