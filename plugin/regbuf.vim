@@ -12,9 +12,6 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 
-if !exists('g:regbuf_debug')
-    let g:regbuf_debug = 0
-endif
 if !exists('g:regbuf_open_command')
     let g:regbuf_open_command = 'new'
 endif
