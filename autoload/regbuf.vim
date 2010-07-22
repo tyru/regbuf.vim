@@ -65,6 +65,7 @@ function! s:write_registers() "{{{
     let lines = split(output, '\n')
     call remove(lines, 0)    " First line must be "--- Registers ---"
     call setline(1, lines)
+    setlocal nomodified
 endfunction "}}}
 function! s:close_all_child_windows() "{{{
     let winnr = winnr()
@@ -142,6 +143,7 @@ function! s:write_register_value(regname) "{{{
     let [value, _] = [getreg(a:regname, 1), getregtype(a:regname)]
     let b:regbuf_edit_regname = a:regname
     call setline(1, split(value, '\n'))
+    setlocal nomodified
 endfunction "}}}
 
 function! s:buf_edit_apply() "{{{
@@ -211,7 +213,6 @@ function! s:preview_register() "{{{
             execute winnr 'wincmd w'
             setlocal modifiable
             call s:write_register_value(regname)
-            setlocal nomodified
             setlocal nomodifiable
             execute prev_winnr 'wincmd w'
 
