@@ -41,12 +41,14 @@ function! regbuf#open() "{{{
 
     nnoremap <silent><buffer> <Plug>(regbuf-yank)  :<C-u>call <SID>buf_yank()<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-paste) :<C-u>call <SID>buf_paste()<CR>
+    nnoremap <silent><buffer> <Plug>(regbuf-swap)  :<C-u>call <SID>buf_swap()<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-paste-buffer)   :<C-u>call <SID>buf_paste_buffer()<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-edit)  :<C-u>call <SID>buf_edit()<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-close)  :<C-u>close<CR>
     if !g:regbuf_no_default_keymappings
         nmap <buffer> <LocalLeader>y <Plug>(regbuf-yank)
         nmap <buffer> <LocalLeader>p <Plug>(regbuf-paste)
+        nmap <buffer> <LocalLeader>s <Plug>(regbuf-swap)
         nmap <buffer> <LocalLeader>bp <Plug>(regbuf-paste-buffer)
         nmap <buffer> <LocalLeader>e <Plug>(regbuf-edit)
 
@@ -102,6 +104,17 @@ function! s:buf_paste() "{{{
     endif
     let [value, type] = [getreg('"', 1), getregtype('"')]
     call setreg(regname, value, type)
+endfunction "}}}
+
+function! s:buf_swap() "{{{
+    let regname = s:get_regname_on_cursor()
+    if regname ==# s:INVALID_REGISTER
+        return
+    endif
+    let [value, type] = [getreg(regname, 1), getregtype(regname)]
+    let [given_value, given_type] = [getreg('"', 1), getregtype('"')]
+    call setreg(regname, given_value, given_type)    " Yank to the register on cursor.
+    call setreg('"', value, type)    " Yank to given register by keymapping.
 endfunction "}}}
 
 function! s:buf_paste_buffer() "{{{
