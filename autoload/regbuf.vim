@@ -21,8 +21,7 @@ lockvar s:INVALID_REGISTER
 
 
 function! regbuf#open(...) "{{{
-    execute g:regbuf_open_command
-    setlocal bufhidden=hide buftype=nofile noswapfile nobuflisted
+    call s:create_buffer('regbuf:registers', g:regbuf_open_command, 'nofile')
 
     let save_lang = v:lang
     lang messages C
@@ -86,18 +85,11 @@ function! s:buf_edit() "{{{
     call s:open_register_buffer(regname)
 endfunction "}}}
 function! s:open_register_buffer(regname) "{{{
-    let name = 'regbuf:edit:@' . a:regname
-    let winnr = bufwinnr(bufnr(name))
-    if winnr ==# -1
-        execute
-        \   exists('g:regbuf_edit_open_command') ?
-        \       g:regbuf_edit_open_command :
-        \       g:regbuf_open_command
-        setlocal bufhidden=hide buftype=acwrite noswapfile nobuflisted
-        file `=name`
-    else
-        execute winnr 'wincmd w'
-    endif
+    let open_command =
+    \   exists('g:regbuf_edit_open_command') ?
+    \       g:regbuf_edit_open_command :
+    \       g:regbuf_open_command
+    call s:create_buffer('regbuf:edit:@' . a:regname, open_command, 'acwrite')
 
     let [value, b:regbuf_edit_regtype] = [getreg(a:regname, 1), getregtype(a:regname)]
     let b:regbuf_edit_regname = a:regname
@@ -140,6 +132,19 @@ function! s:buf_edit_apply() "{{{
     call call('setreg', [b:regbuf_edit_regname, value] + (type !=# INVALID_REGTYPE ? [type] : []))
 
     setlocal nomodified
+endfunction "}}}
+
+
+function! s:create_buffer(name, open_command, buftype) "{{{
+    let winnr = bufwinnr(bufnr(a:name))
+    if winnr ==# -1
+        execute a:open_command
+        setlocal bufhidden=hide noswapfile nobuflisted
+        let &l:buftype = a:buftype
+        file `=a:name`
+    else
+        execute winnr 'wincmd w'
+    endif
 endfunction "}}}
 
 
