@@ -157,6 +157,7 @@ function! s:create_buffer(name, open_command, buftype) "{{{
     else
         execute winnr 'wincmd w'
     endif
+    return bufnr('%')
 endfunction "}}}
 
 
