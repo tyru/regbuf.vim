@@ -172,14 +172,37 @@ function! s:get_regname_on_cursor() "{{{
 endfunction "}}}
 
 
-" TODO
 function! s:preview_register() "{{{
     let regname = s:get_regname_on_cursor()
     if regname ==# s:INVALID_REGISTER
         return
     endif
 
-    " TODO
+    if bufwinnr(bufnr('regbuf:preview')) == -1
+        call s:create_buffer('regbuf:preview', 'pedit', 'nofile')
+    endif
+
+    " :pedit does not change current window.
+    " So we must jump into that window manually.
+    let winnr = winnr()
+    let preview_winnr = -1
+    for nr in range(1, winnr('$'))
+        if getbufvar(nr, '&previewwindow')
+            let previewwindow = nr
+            break
+        endif
+    endfor
+    if nr ==# -1
+        echoerr 'No preview window? strange...'
+        return
+    endif
+    execute nr 'wincmd w'
+
+    setlocal modifiable
+    call s:write_register_value(regname)
+    setlocal nomodifiable
+
+    execute winnr 'wincmd w'
 endfunction "}}}
 
 
