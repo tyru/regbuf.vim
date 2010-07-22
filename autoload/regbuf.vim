@@ -105,6 +105,8 @@ function! s:buf_edit() "{{{
     call s:open_register_buffer(regname)
 endfunction "}}}
 function! s:open_register_buffer(regname) "{{{
+    pclose
+
     let open_command =
     \   exists('g:regbuf_edit_open_command') ?
     \       g:regbuf_edit_open_command :
