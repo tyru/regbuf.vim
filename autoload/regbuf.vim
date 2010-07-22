@@ -189,7 +189,8 @@ function! s:preview_register() "{{{
     endif
 
     " :pedit does not change current window.
-    " So we must jump into that window manually.
+    " So we must jump into that window manually
+    " and write register value.
     let winnr = winnr()
     let preview_winnr = -1
     for nr in range(1, winnr('$'))
