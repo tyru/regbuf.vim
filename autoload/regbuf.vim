@@ -18,7 +18,6 @@ set cpo&vim
 let s:INVALID_REGISTER = -1
 lockvar s:INVALID_REGISTER
 
-let s:preview_bufnr = -1
 let s:edit_bufnr = -1
 
 
@@ -191,25 +190,19 @@ function! s:preview_register() "{{{
     " :pedit does not change current window.
     " So we must jump into that window manually
     " and write register value.
-    let winnr = winnr()
-    let preview_winnr = -1
-    for nr in range(1, winnr('$'))
-        if getbufvar(nr, '&previewwindow')
-            let previewwindow = nr
+    let prev_winnr = winnr()
+    for winnr in range(1, winnr('$'))
+        if getwinvar(winnr, '&previewwindow')
+            execute winnr 'wincmd w'
+            setlocal modifiable
+            call s:write_register_value(regname)
+            setlocal nomodified
+            setlocal nomodifiable
+            execute prev_winnr 'wincmd w'
+
             break
         endif
     endfor
-    if nr ==# -1
-        echoerr 'No preview window? strange...'
-        return
-    endif
-    execute nr 'wincmd w'
-
-    setlocal modifiable
-    call s:write_register_value(regname)
-    setlocal nomodifiable
-
-    execute winnr 'wincmd w'
 endfunction "}}}
 
 
