@@ -94,7 +94,8 @@ function! s:buf_yank() "{{{
         return
     endif
     let [value, type] = [getreg(regname, 1), getregtype(regname)]
-    call setreg('"', value, type)
+    let given_regname = v:register != '' ? v:register : '"'
+    call setreg(to_regname, value, type)
 endfunction "}}}
 
 function! s:buf_paste() "{{{
@@ -102,7 +103,8 @@ function! s:buf_paste() "{{{
     if regname ==# s:INVALID_REGISTER
         return
     endif
-    let [value, type] = [getreg('"', 1), getregtype('"')]
+    let given_regname = v:register != '' ? v:register : '"'
+    let [value, type] = [getreg(given_regname, 1), getregtype(given_regname)]
     call setreg(regname, value, type)
 endfunction "}}}
 
@@ -112,7 +114,8 @@ function! s:buf_swap() "{{{
         return
     endif
     let [value, type] = [getreg(regname, 1), getregtype(regname)]
-    let [given_value, given_type] = [getreg('"', 1), getregtype('"')]
+    let given_regname = v:register != '' ? v:register : '"'
+    let [given_value, given_type] = [getreg(given_regname, 1), getregtype(given_regname)]
     call setreg(regname, given_value, given_type)    " Yank to the register on cursor.
     call setreg('"', value, type)    " Yank to given register by keymapping.
 endfunction "}}}
