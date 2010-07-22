@@ -27,9 +27,9 @@ endif
 
 
 command!
-\   -bar -nargs=*
+\   -bar
 \   RegbufOpen
-\   call regbuf#open(<f-args>)
+\   call regbuf#open()
 
 
 " Restore 'cpoptions' {{{

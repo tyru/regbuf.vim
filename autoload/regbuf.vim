@@ -22,7 +22,7 @@ let s:edit_bufnr = -1
 
 
 
-function! regbuf#open(...) "{{{
+function! regbuf#open() "{{{
     call s:create_buffer('regbuf:registers', g:regbuf_open_command, 'nofile')
 
     call s:write_registers()
