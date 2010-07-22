@@ -27,15 +27,13 @@ function! regbuf#open() "{{{
 
     call s:write_registers()
 
-    if !g:regbuf_no_default_autocmd
-        augroup regbuf
-            autocmd!
-            if g:regbuf_show_preview
-                autocmd CursorMoved <buffer> call s:preview_register()
-            endif
-            autocmd BufWinLeave <buffer> call s:close_all_child_windows()
-        augroup END
-    endif
+    augroup regbuf
+        autocmd!
+        if g:regbuf_show_preview
+            autocmd CursorMoved <buffer> call s:preview_register()
+        endif
+        autocmd BufWinLeave <buffer> call s:close_all_child_windows()
+    augroup END
 
     nnoremap <silent><buffer> <Plug>(regbuf-yank)  :<C-u>call <SID>buf_yank()<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-paste) :<C-u>call <SID>buf_paste()<CR>
