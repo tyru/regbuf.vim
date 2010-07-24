@@ -38,6 +38,7 @@ function! regbuf#open() "{{{
     autocmd regbuf BufWinLeave <buffer> let s:opened_bufnr = -1
 
     call s:create_buffer('regbuf:registers', g:regbuf_open_command, 'nofile')
+    setlocal modifiable
     call s:write_registers()
 
     if g:regbuf_show_preview
@@ -169,7 +170,7 @@ function! s:open_register_buffer(regname) "{{{
     \       g:regbuf_edit_open_command :
     \       g:regbuf_open_command
     let s:edit_bufnr = s:create_buffer('regbuf:edit:@' . a:regname, open_command, 'acwrite')
-
+    setlocal modifiable
     call s:write_register_value(a:regname)
 
     command!
@@ -233,7 +234,6 @@ function! s:create_buffer(name, open_command, buftype) "{{{
     else
         execute winnr 'wincmd w'
     endif
-    setlocal modifiable    " for writing buffer after this function call
     return bufnr('%')
 endfunction "}}}
 
