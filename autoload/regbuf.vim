@@ -50,6 +50,7 @@ function! regbuf#open() "{{{
     nnoremap <silent><buffer> <Plug>(regbuf-paste) :<C-u>call <SID>do_operate('buf_paste')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-swap)  :<C-u>call <SID>do_operate('buf_swap')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-paste-buffer)   :<C-u>call <SID>do_operate('buf_paste_buffer')<CR>
+    nnoremap <silent><buffer> <Plug>(regbuf-paste-buffer-noclose)   :<C-u>call <SID>do_operate('buf_paste_buffer_noclose')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-edit)  :<C-u>call <SID>do_operate('buf_edit')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-close)  :<C-u>close<CR>
     if !g:regbuf_no_default_keymappings
@@ -157,6 +158,26 @@ function! s:buf_paste_buffer(...) "{{{
     execute prevwinnr 'wincmd w'
 
     quit    " will call s:close_all_child_windows().
+endfunction "}}}
+
+function! s:buf_paste_buffer_noclose(...) "{{{
+    let regname = s:get_regname_on_cursor()
+    if regname ==# s:INVALID_REGISTER
+        return
+    endif
+
+    let winnr = bufwinnr(s:opened_bufnr)
+    if winnr ==# -1
+        echohl WarningMsg
+        echomsg 'original buffer is closed...'
+        echohl None
+    endif
+
+    let prevwinnr = winnr()
+    execute winnr 'wincmd w'
+    let pastecmd = getregtype(regname) == 'v' ? 'P' : 'p'
+    execute 'normal!' '"' . regname . pastecmd
+    execute prevwinnr 'wincmd w'
 endfunction "}}}
 
 function! s:buf_edit(...) "{{{
