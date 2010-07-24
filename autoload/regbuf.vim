@@ -181,6 +181,9 @@ function! s:paste_buffer() "{{{
 
     let prevwinnr = winnr()
     execute winnr 'wincmd w'
+    if !g:regbuf_paste_buffer_nodelete
+        %delete _
+    endif
     let pastecmd = getregtype(regname) == 'v' ? 'P' : 'p'
     execute 'normal!' '"' . regname . pastecmd
     execute prevwinnr 'wincmd w'

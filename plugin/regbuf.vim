@@ -31,6 +31,9 @@ endif
 if !exists('g:regbuf_paste_buffer_noclose')
     let g:regbuf_paste_buffer_noclose = 0
 endif
+if !exists('g:regbuf_paste_buffer_nodelete')
+    let g:regbuf_paste_buffer_nodelete = 0
+endif
 
 
 command!
