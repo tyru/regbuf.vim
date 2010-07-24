@@ -40,6 +40,7 @@ function! regbuf#open() "{{{
     call s:create_buffer('regbuf:registers', g:regbuf_open_command, 'nofile')
     setlocal modifiable
     call s:write_registers()
+    setlocal nomodifiable
 
     if g:regbuf_show_preview
         autocmd regbuf CursorMoved <buffer> call s:preview_register()
@@ -65,7 +66,6 @@ function! regbuf#open() "{{{
         nmap <buffer> <Esc>     <Plug>(regbuf-close)
     endif
 
-    setlocal nomodifiable
     setfiletype regbuf
 endfunction "}}}
 function! s:write_registers() "{{{
