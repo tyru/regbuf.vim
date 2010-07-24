@@ -53,6 +53,7 @@ function! regbuf#open() "{{{
     nnoremap <silent><buffer> <Plug>(regbuf-swap)  :<C-u>call <SID>do_operate('buf_swap')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-paste-buffer)   :<C-u>call <SID>do_operate('buf_paste_buffer')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-paste-buffer-noclose)   :<C-u>call <SID>do_operate('buf_paste_buffer_noclose')<CR>
+    nnoremap <silent><buffer> <Plug>(regbuf-paste-buffer-nodelete)   :<C-u>call <SID>do_operate('buf_paste_buffer_nodelete')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-edit)  :<C-u>call <SID>do_operate('buf_edit')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-close)  :<C-u>close<CR>
     if !g:regbuf_no_default_keymappings
@@ -163,6 +164,15 @@ function! s:buf_paste_buffer_noclose(...) "{{{
         call s:paste_buffer()
     finally
         let g:regbuf_paste_buffer_noclose = save
+    endtry
+endfunction "}}}
+function! s:buf_paste_buffer_nodelete(...) "{{{
+    let save = g:regbuf_paste_buffer_nodelete
+    let g:regbuf_paste_buffer_nodelete = 1
+    try
+        call s:paste_buffer()
+    finally
+        let g:regbuf_paste_buffer_nodelete = save
     endtry
 endfunction "}}}
 function! s:paste_buffer() "{{{
