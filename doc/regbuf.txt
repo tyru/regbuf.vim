@@ -139,11 +139,11 @@ Default keymappings
 If |g:regbuf_no_default_keymappings| is true,
 These mappings are not mapped.
 
-<LocalLeader>y is mapped to |<Plug>(regbuf-yank)|.
-<LocalLeader>p is mapped to |<Plug>(regbuf-paste)|.
-<LocalLeader>s is mapped to |<Plug>(regbuf-swap)|.
-<LocalLeader>bp is mapped to |<Plug>(regbuf-paste-buffer)|.
-<LocalLeader>e and <CR> is mapped to |<Plug>(regbuf-edit)|.
+y is mapped to |<Plug>(regbuf-yank)|.
+p is mapped to |<Plug>(regbuf-paste)|.
+s is mapped to |<Plug>(regbuf-swap)|.
+bp is mapped to |<Plug>(regbuf-paste-buffer)|.
+e and <CR> is mapped to |<Plug>(regbuf-edit)|.
 q and <Esc> is mapped to |<Plug>(regbuf-close)|.
 
 }}}

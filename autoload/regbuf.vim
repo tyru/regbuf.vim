@@ -54,11 +54,11 @@ function! regbuf#open() "{{{
     nnoremap <silent><buffer> <Plug>(regbuf-edit)  :<C-u>call <SID>do_operate('buf_edit')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-close)  :<C-u>close<CR>
     if !g:regbuf_no_default_keymappings
-        nmap <buffer> <LocalLeader>y <Plug>(regbuf-yank)
-        nmap <buffer> <LocalLeader>p <Plug>(regbuf-paste)
-        nmap <buffer> <LocalLeader>s <Plug>(regbuf-swap)
-        nmap <buffer> <LocalLeader>bp <Plug>(regbuf-paste-buffer)
-        nmap <buffer> <LocalLeader>e <Plug>(regbuf-edit)
+        nmap <buffer> y <Plug>(regbuf-yank)
+        nmap <buffer> p <Plug>(regbuf-paste)
+        nmap <buffer> s <Plug>(regbuf-swap)
+        nmap <buffer> bp <Plug>(regbuf-paste-buffer)
+        nmap <buffer> e <Plug>(regbuf-edit)
 
         nmap <buffer> <CR>      <Plug>(regbuf-edit)
         nmap <buffer> q         <Plug>(regbuf-close)
