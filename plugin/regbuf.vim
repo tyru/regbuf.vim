@@ -28,6 +28,9 @@ endif
 if !exists('g:regbuf_show_preview')
     let g:regbuf_show_preview = 1
 endif
+if !exists('g:regbuf_paste_buffer_noclose')
+    let g:regbuf_paste_buffer_noclose = 0
+endif
 
 
 command!

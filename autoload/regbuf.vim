@@ -155,10 +155,15 @@ endfunction "}}}
 
 function! s:buf_paste_buffer(...) "{{{
     call s:paste_buffer()
-    quit    " will call s:close_all_child_windows().
 endfunction "}}}
 function! s:buf_paste_buffer_noclose(...) "{{{
-    call s:paste_buffer()
+    let save = g:regbuf_paste_buffer_noclose
+    let g:regbuf_paste_buffer_noclose = 1
+    try
+        call s:paste_buffer()
+    finally
+        let g:regbuf_paste_buffer_noclose = save
+    endtry
 endfunction "}}}
 function! s:paste_buffer() "{{{
     let regname = s:get_regname_on_cursor()
@@ -179,6 +184,10 @@ function! s:paste_buffer() "{{{
     let pastecmd = getregtype(regname) == 'v' ? 'P' : 'p'
     execute 'normal!' '"' . regname . pastecmd
     execute prevwinnr 'wincmd w'
+
+    if !g:regbuf_paste_buffer_noclose
+        quit    " will call s:close_all_child_windows().
+    endif
 endfunction "}}}
 
 function! s:buf_edit(...) "{{{
