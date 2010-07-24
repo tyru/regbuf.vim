@@ -101,9 +101,23 @@ function! s:do_operate(opfunc) "{{{
     let &opfunc = "\<SNR>" . s:SID_PREFIX . '_' . a:opfunc
     normal! g@g@
 
+    let winnr = bufwinnr(bufnr('regbuf:registers'))
+    if winnr == -1    " regbuf:registers buffer is not displayed
+        return
+    endif
+    let prevwinnr = -1
+    if winnr != winnr()
+        let prevwinnr = winnr()
+        execute winnr 'wincmd w'
+    endif
+
     setlocal modifiable
     call s:write_registers()
     setlocal modifiable
+
+    if prevwinnr !=# -1
+        execute prevwinnr 'wincmd w'
+    endif
 endfunction "}}}
 
 function! s:buf_yank(...) "{{{
