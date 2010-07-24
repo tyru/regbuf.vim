@@ -99,6 +99,10 @@ function! s:do_operate(opfunc) "{{{
     let s:op_register = v:register
     let &opfunc = "\<SNR>" . s:SID_PREFIX . '_' . a:opfunc
     normal! g@g@
+
+    setlocal modifiable
+    call s:write_registers()
+    setlocal modifiable
 endfunction "}}}
 
 function! s:buf_yank(...) "{{{
