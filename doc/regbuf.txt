@@ -34,7 +34,7 @@ Changelog					|regbuf-changelog|
 
 
 ==============================================================================
-INTRODUCTION						*regbuf-introduction* {{{
+INTRODUCTION						*regbuf-introduction*
 
 |regbuf| is handy |:reg| buffer.
 
@@ -42,7 +42,6 @@ INTRODUCTION						*regbuf-introduction* {{{
 2. Edit register on buffer
 3. etc.
 
-}}}
 ==============================================================================
 INTERFACE				*regbuf-interface* {{{
 ------------------------------------------------------------------------------
