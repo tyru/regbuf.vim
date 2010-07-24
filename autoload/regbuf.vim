@@ -46,6 +46,7 @@ function! regbuf#open() "{{{
         autocmd regbuf CursorMoved <buffer> call s:preview_register()
     endif
     autocmd regbuf BufWinLeave <buffer> call s:close_all_child_windows()
+    autocmd regbuf WinLeave    <buffer> call s:close_preview_window()
 
     nnoremap <silent><buffer> <Plug>(regbuf-yank)  :<C-u>call <SID>do_operate('buf_yank')<CR>
     nnoremap <silent><buffer> <Plug>(regbuf-paste) :<C-u>call <SID>do_operate('buf_paste')<CR>
