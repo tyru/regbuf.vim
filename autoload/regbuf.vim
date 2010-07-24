@@ -43,7 +43,7 @@ function! regbuf#open() "{{{
     setlocal nomodifiable
 
     if g:regbuf_show_preview
-        autocmd regbuf CursorMoved <buffer> call s:preview_register()
+        autocmd regbuf WinEnter,CursorMoved <buffer> call s:preview_register()
     endif
     autocmd regbuf BufWinLeave <buffer> call s:close_all_child_windows()
     autocmd regbuf WinLeave    <buffer> call s:close_preview_window()
