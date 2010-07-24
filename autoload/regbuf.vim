@@ -154,29 +154,13 @@ function! s:buf_swap(...) "{{{
 endfunction "}}}
 
 function! s:buf_paste_buffer(...) "{{{
-    let regname = s:get_regname_on_cursor()
-    if regname ==# s:INVALID_REGISTER
-        return
-    endif
-
-    let winnr = bufwinnr(s:opened_bufnr)
-    if winnr ==# -1
-        echohl WarningMsg
-        echomsg 'original buffer is closed...'
-        echohl None
-        return
-    endif
-
-    let prevwinnr = winnr()
-    execute winnr 'wincmd w'
-    let pastecmd = getregtype(regname) == 'v' ? 'P' : 'p'
-    execute 'normal!' '"' . regname . pastecmd
-    execute prevwinnr 'wincmd w'
-
+    call s:paste_buffer()
     quit    " will call s:close_all_child_windows().
 endfunction "}}}
-
 function! s:buf_paste_buffer_noclose(...) "{{{
+    call s:paste_buffer()
+endfunction "}}}
+function! s:paste_buffer() "{{{
     let regname = s:get_regname_on_cursor()
     if regname ==# s:INVALID_REGISTER
         return
