@@ -78,6 +78,15 @@ g:regbuf_show_preview					*g:regbuf_show_preview*
 								(Default: 1)
 	If true, show register's content at |preview-window|.
 
+g:regbuf_paste_buffer_noclose			*g:regbuf_paste_buffer_noclose*
+								(Default: 0)
+	If true, |<Plug>(regbuf-paste-buffer)| does not close |regbuf-registers-window|.
+
+g:regbuf_paste_buffer_nodelete			*g:regbuf_paste_buffer_nodelete*
+								(Default: 0)
+	If true, |<Plug>(regbuf-paste-buffer)| does not delete existing text
+	in original buffer.
+
 }}}
 ------------------------------------------------------------------------------
 FUNCTIONS					*regbuf-functions* {{{
@@ -125,7 +134,12 @@ REGISTERS WINDOW KEYMAPPINGS	*regbuf-registers-window-keymappings* {{{
 	If no register is specified, unnamed register (|quote_quote|) is used.
 
 <Plug>(regbuf-paste-buffer-noclose)		*<Plug>(regbuf-paste-buffer-noclose)*
-	Same as |<Plug>(regbuf-paste-buffer)| but this does not close |regbuf-registers-window|.
+	This behaves like |<Plug>(regbuf-paste-buffer)|
+	when |g:regbuf_paste_buffer_noclose| is true.
+
+<Plug>(regbuf-paste-buffer-nodelete)		*<Plug>(regbuf-paste-buffer-nodelete)*
+	This behaves like |<Plug>(regbuf-paste-buffer)|
+	when |g:regbuf_paste_buffer_nodelete| is true.
 
 <Plug>(regbuf-edit)				*<Plug>(regbuf-edit)*
 	Start editing the register's content on cursor.
