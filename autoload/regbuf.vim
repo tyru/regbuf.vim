@@ -149,6 +149,7 @@ function! s:buf_paste_buffer(...) "{{{
         echohl WarningMsg
         echomsg 'original buffer is closed...'
         echohl None
+        return
     endif
 
     let prevwinnr = winnr()
@@ -171,6 +172,7 @@ function! s:buf_paste_buffer_noclose(...) "{{{
         echohl WarningMsg
         echomsg 'original buffer is closed...'
         echohl None
+        return
     endif
 
     let prevwinnr = winnr()
