@@ -130,6 +130,9 @@ function! s:buf_yank(...) "{{{
     let [value, type] = [getreg(regname, 1), getregtype(regname)]
     let given_regname = s:op_register != '' ? s:op_register : '"'
     call setreg(given_regname, value, type)
+
+    redraw
+    echo 'Yanked' regname 'register to' given_regname 'register.'
 endfunction "}}}
 
 function! s:buf_paste(...) "{{{
@@ -140,6 +143,9 @@ function! s:buf_paste(...) "{{{
     let given_regname = s:op_register != '' ? s:op_register : '"'
     let [value, type] = [getreg(given_regname, 1), getregtype(given_regname)]
     call setreg(regname, value, type)
+
+    redraw
+    echo 'Pasted' given_regname 'register to' regname 'register.'
 endfunction "}}}
 
 function! s:buf_swap(...) "{{{
@@ -152,6 +158,9 @@ function! s:buf_swap(...) "{{{
     let [given_value, given_type] = [getreg(given_regname, 1), getregtype(given_regname)]
     call setreg(regname, given_value, given_type)    " Yank to the register on cursor.
     call setreg(given_regname, value, type)    " Yank to given register by keymapping.
+
+    redraw
+    echo 'Swapped' regname 'and' given_regname 'register.'
 endfunction "}}}
 
 function! s:buf_paste_buffer(...) "{{{
@@ -203,6 +212,9 @@ function! s:paste_buffer() "{{{
     if !g:regbuf_paste_buffer_noclose
         quit    " will call s:close_all_child_windows().
     endif
+
+    redraw
+    echo 'Pasted' regname 'register to buffer(' . bufname(s:opened_bufnr) . ').'
 endfunction "}}}
 
 function! s:buf_edit(...) "{{{
@@ -244,6 +256,9 @@ function! s:open_register_buffer(regname) "{{{
     nnoremap <buffer> <Plug>(regbuf-edit-apply)  :<C-u>RegbufEditApply<CR>
 
     setfiletype regbuf-edit
+
+    redraw
+    echo 'Start editing' a:regname 'register.'
 endfunction "}}}
 function! s:write_register_value(regname) "{{{
     %delete _
