@@ -115,7 +115,7 @@ function! s:do_operate(opfunc) "{{{
 
     setlocal modifiable
     call s:write_registers()
-    setlocal modifiable
+    setlocal nomodifiable
 
     if prevwinnr !=# -1
         execute prevwinnr 'wincmd w'
