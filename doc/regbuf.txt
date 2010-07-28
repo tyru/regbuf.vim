@@ -201,7 +201,7 @@ http://twitter.com/tyru is also welcome :)
 CHANGELOG						*regbuf-changelog* {{{
 
 0.0.0:
-- Initial Commit
+- Initial upload
 
 }}}
 ==============================================================================
