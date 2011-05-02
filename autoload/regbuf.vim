@@ -99,7 +99,7 @@ function! s:close_all_child_windows() "{{{
 endfunction "}}}
 
 function! s:do_operate(opfunc) "{{{
-    let s:op_register = v:register
+    let s:op_register = (v:register == '"' || v:register == '') ? s:default_register() : v:register
     let &opfunc = "\<SNR>" . s:SID_PREFIX . '_' . a:opfunc
     normal! g@g@
 
@@ -128,11 +128,10 @@ function! s:buf_yank(...) "{{{
         return
     endif
     let [value, type] = [getreg(regname, 1), getregtype(regname)]
-    let given_regname = s:op_register != '' ? s:op_register : '"'
-    call setreg(given_regname, value, type)
+    call setreg(s:op_register, value, type)
 
     redraw
-    echo 'Yanked' regname 'register to' given_regname 'register.'
+    echo 'Yanked' regname 'register to' s:op_register 'register.'
 endfunction "}}}
 
 function! s:buf_paste(...) "{{{
@@ -140,12 +139,11 @@ function! s:buf_paste(...) "{{{
     if regname ==# s:INVALID_REGISTER
         return
     endif
-    let given_regname = s:op_register != '' ? s:op_register : '"'
-    let [value, type] = [getreg(given_regname, 1), getregtype(given_regname)]
+    let [value, type] = [getreg(s:op_register, 1), getregtype(s:op_register)]
     call setreg(regname, value, type)
 
     redraw
-    echo 'Pasted' given_regname 'register to' regname 'register.'
+    echo 'Pasted' s:op_register 'register to' regname 'register.'
 endfunction "}}}
 
 function! s:buf_swap(...) "{{{
@@ -154,13 +152,12 @@ function! s:buf_swap(...) "{{{
         return
     endif
     let [value, type] = [getreg(regname, 1), getregtype(regname)]
-    let given_regname = s:op_register != '' ? s:op_register : '"'
-    let [given_value, given_type] = [getreg(given_regname, 1), getregtype(given_regname)]
+    let [given_value, given_type] = [getreg(s:op_register, 1), getregtype(s:op_register)]
     call setreg(regname, given_value, given_type)    " Yank to the register on cursor.
-    call setreg(given_regname, value, type)    " Yank to given register by keymapping.
+    call setreg(s:op_register, value, type)    " Yank to given register by keymapping.
 
     redraw
-    echo 'Swapped' regname 'and' given_regname 'register.'
+    echo 'Swapped' regname 'and' s:op_register 'register.'
 endfunction "}}}
 
 function! s:buf_paste_buffer(...) "{{{
@@ -348,6 +345,17 @@ function! s:close_preview_window() "{{{
         return
     endif
     pclose
+endfunction "}}}
+
+
+function! s:default_register() "{{{
+    if &clipboard =~# '\v<unnamedplus>'
+        return '+'
+    elseif &clipboard =~# '\v<unnamed>'
+        return '*'
+    else
+        return '"'
+    endif
 endfunction "}}}
 
 
